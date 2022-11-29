@@ -5,7 +5,16 @@ class Blog extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->view('welcome_message');
+		/* Passagem valores entre controller e view */
+		$data = array(
+			"title" => "Blog View",
+			"criador" => "Leonardo",
+			"text" => "Texto criado pelo controlador"
+		);
+
+		$this->load->view('comuns/header', $data);
+		$this->load->view('blog-view', $data);
+		$this->load->view('comuns/footer', $data);
 	}
 
 	public function exemplo()
@@ -37,5 +46,8 @@ class Blog extends CI_Controller {
 
 		$nome = $this->uri->segment(4);
 		echo 'Nome: '.$nome;
+		echo '<br>';
+
+		print_r($this->uri->segments);
 	}
 }
