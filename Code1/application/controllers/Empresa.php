@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Raiz extends my_controller {
+class Empresa extends my_controller {
 
 	public function index()
 	{
-		$this->setTitle('Home Page');
+		$this->setTitle('Empresa');
 
 		$data = array('description' => 'Description home page');
 		$this->setData($data);
