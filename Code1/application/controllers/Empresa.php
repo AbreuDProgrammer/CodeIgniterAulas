@@ -1,28 +1,26 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Empresa extends my_controller {
-
+class Empresa extends My_controller 
+{
 	public function index()
-	{
-		$this->setTitle('Empresa');
-
-		$data = array('description' => 'Description home page');
-		$this->setData($data);
-
-		$data_footer = array('criador' => 'Leonardo');
-		$this->setFooterData($data_footer);
-
-		$css_files = array(
-			'home' => 'home'
-		);
-		$this->setCssFiles($css_files);
+	{		
+		$this->set_nav();
 		
-		$js_files = array(
-			'js' => 'home'
+		$footer = array(
+			'criador' => 'Leonardo'
 		);
-		$this->setJsFiles($js_files);
+		$this->set_footer_data($footer);
 
-		$this->load_views('home');
+		$data = array(
+			'description' => 'Description home page'
+		);
+		$this->set_body_data($data, Empresa::BODY_DATA);
+
+		// Define as variaveis usadas no site e cria-o
+		$title = 'Empresa';
+		$css = array('home');
+		$view = 'home';
+		$this->create_site_details($title, $css, $view);
 	}
 }

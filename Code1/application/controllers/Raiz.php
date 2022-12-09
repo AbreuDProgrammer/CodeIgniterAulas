@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Raiz extends my_controller {
+class Raiz extends My_controller {
 
 	public function index()
 	{
