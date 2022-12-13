@@ -14,9 +14,6 @@ abstract class My_controller extends CI_Controller
 	private $data_body = array();
 	private $data_footer = array();
 
-	// Variavel que verifica se o user está loggado
-	private bool $is_logged = false;
-
 	// Configs para paths
 	private const INCLUDES_PATH = 'includes';
 	private const INCLUDE_HEADER = 'header';
@@ -43,7 +40,7 @@ abstract class My_controller extends CI_Controller
 		parent::__construct();
 		
 		// Chama as variaveis de login
-		//! session_start();
+		//session_start();
 
 		// Carrega as bibliotecas e os helpers 
 		$this->load_libraries();
@@ -56,8 +53,8 @@ abstract class My_controller extends CI_Controller
 		$this->set_css_files(self::MAIN_CSS_PATH);
 		
 		// Verifica se o user não está loggado e não está na pagina de login ou criação de conta volta para o login
-		//! if(!$this->login->is_logged() && $this->uri->segment(1) <> 'login' && $this->uri->segment(1) <> 'create_account')
-		//!		$this->go_to('login');
+		if(!$this->session->userdata('username') && $this->uri->segment(1) <> 'login' && $this->uri->segment(1) <> 'create_account')
+			$this->go_to('login');
 
 		// Executa as funcionalidades essenciais do controller
 		$this->construtor();
@@ -216,8 +213,8 @@ abstract class My_controller extends CI_Controller
 		// Carrega a biblioteca de validação de formularios com o apelido de 'form_validator'
 		$this->load->library('form_validation', null, 'form_validator');
 
-		// Carrega a biblioteca do login com o apelido de 'login'
-		//! $this->load->library('my_login', null, 'login');
+		// Carrega a biblioteca de sessão
+		$this->load->library('session');
 	}
 
 	// Carrega todas os helpers dos controllers
@@ -236,25 +233,81 @@ abstract class My_controller extends CI_Controller
 		header('Location: '.$action);
 	}
 
-	// Cria uma funcionalidade para POST e GET
-	protected function set_listener(My_controller $controller, String $action, String $method): Void
+	/**
+	 * Cria uma funcionalidade para POST e GET.
+	 * 
+	 * Essa funcionalidade tem de receber qual o controlador que está chamando
+	 * para executar a funcionalidade, e esse controlador tem de ser herdeiro da classe atual.
+	 * 
+	 * É preciso passar uma funcionalidade para quando for passado alguma informação, só será executado se
+	 * existir e as regras forem cumpridas, qualquer outra coisa não cumprida retorna false.
+	 * 
+	 * É preciso do metodo que está a tentar receber, POST ou GET.
+	 * 
+	 * Pode ser passado uma regra de formulario para a classe, ela verificará se essa regra foi cumprida
+	 * antes de qualquer outra verificação.
+	 */
+	protected function set_listener(My_controller $controller, String $action, String $method, Bool $form_validation = TRUE): Bool
 	{
+		// Verifica se as regras foram cumpridas
+		if(!$form_validation)
+			return false;
+
 		// Se o metodo não existir retorna e se for privado da erro
 		if(!method_exists($controller, $action))
-			return;
+			return false;
 
 		// Cria uma variavel com os metodos possiveis e as suas respectivas variaveis
 		$ma = array(
-			'POST' => $_POST,
-			'GET' => $_GET
+			'POST' => $this->input->post(),
+			'GET' => $this->input->get()
 		);
 
-		// Verifica se o metodo passado condiz com alguma key do array de metodos
+		// Verifica se o metodo passado condiz com alguma key do array de metodos (POST ou GET no $method)
 		if(!array_key_exists(strtoupper($method), $ma))
-			return;
+			return false;
 
-		// Verifica se a variavel do method é diferente de null e executa a funcionalidade
-		if($ma[$method])
+		// Verifica se foi passado alguma coisa no GET ou POST e executa se for passado, retorna true para dizer que foi feito
+		if($ma[$method]){
 			$controller->{$action}();
+			return true;
+		}
+
+		// Retorna false para avisar que não foi enviado nenhuma informação
+		return false;
+	}
+
+	/**
+	 * Essa funcionalidade é suposto para ser utilizada quando o formulario tem
+	 * uma verificação já feita para escrever a mensagem
+	 * 
+	 * O listener_response já verifica o formulario, mas quando o site é ativo pela primeira vez
+	 * o listener_response sempre é false, já que nada foi passado ainda.
+	 * 
+	 * O flashdata_name é o nome do session->flashdata que foi criada na ação da funcionalidade
+	 * 
+	 * Essa verificação só existe para que a DB não seja ativada sem propósito, já que
+	 * se os dados não passarem nem as regras com certeza não existem
+	 */
+	protected function test_form(Bool $listener_response, String $flashdata_status, String $flashdata_name): String|Null
+	{
+		// Se o status está definido retorna a mensagem da tentativa
+		if($this->session->flashdata($flashdata_status) !== NULL){
+			$class = $this->session->flashdata($flashdata_status) == TRUE ? 'success' : 'error';
+			$info = '<p class="'.$class.'">'.$this->session->flashdata($flashdata_name).'</p>';
+			return $info;
+		}
+
+		// Se não cumpriu com as regras retorna o erro
+		if($this->form_validator->run() == FALSE){
+			$info = validation_errors();
+			return $info;
+		}
+
+		// Se o listener_response ainda não executou a function então é null
+		if(!$listener_response){
+			$info = null;
+			return $info;
+		}
 	}
 }
