@@ -3,6 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Empresa extends My_controller 
 {
+	public function constructor(): void
+	{
+		$this->load->model('contatos_model');
+	}
+	
 	public function index()
 	{		
 		$this->set_nav();
@@ -15,7 +20,7 @@ class Empresa extends My_controller
 		$data = array(
 			'description' => 'Description home page'
 		);
-		$this->set_body_data($data, Empresa::BODY_DATA);
+		$this->set_body_data($data);
 
 		// Define as variaveis usadas no site e cria-o
 		$title = 'Empresa';

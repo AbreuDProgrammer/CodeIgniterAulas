@@ -22,6 +22,7 @@ abstract class My_controller extends CI_Controller
 	private const ASSETS_PATH = 'assets';
 	private const CSS_PATH = 'css';
 	private const JS_PATH = 'js';
+	private const IMAGES_PATH = 'images';
 	private const MAIN_CSS_PATH = 'mainStyle';
 	private const NAV_CSS_PATH = 'navStyle';
 
@@ -38,9 +39,6 @@ abstract class My_controller extends CI_Controller
 	{
 		// Chama o construtor do CI_Controller
 		parent::__construct();
-		
-		// Chama as variaveis de login
-		//session_start();
 
 		// Carrega as bibliotecas e os helpers 
 		$this->load_libraries();
@@ -51,24 +49,20 @@ abstract class My_controller extends CI_Controller
 		
 		// Define os ficheiros de css main do site
 		$this->set_css_files(self::MAIN_CSS_PATH);
-		
-		// Verifica se o user não está loggado e não está na pagina de login ou criação de conta volta para o login
-		if(!$this->session->userdata('username') && $this->uri->segment(1) <> 'login' && $this->uri->segment(1) <> 'create_account')
-			$this->go_to('login');
 
 		// Executa as funcionalidades essenciais do controller
-		$this->construtor();
+		$this->constructor();
 	}
 
 	// Funcionalidade para carregar os models e outras funcionalidades
-	abstract protected function construtor(): Void;
+	abstract protected function constructor(): Void;
 
 	/**
 	 * Funcionalidade que todos os sites buscam para criar a parte grafica
-	 * Css e Variaveis passadas como array associativos porque podem existir mais do que 
+	 * Css e Variaveis passadas como array associativos porque podem existir mais do que
 	 * um ficheiro de css e mais do que uma variavel
 	 */
-	protected function create_site_details(String $title, Array $css, String $view, Bool $nav = TRUE): Void
+	protected function create_site_details(String $title, Array|String $css, String $view, Bool $nav = TRUE): Void
 	{
 		// Define um titulo para a pagina
 		$this->set_title($title);
@@ -119,7 +113,7 @@ abstract class My_controller extends CI_Controller
 	}
 
 	// Adiciona um ficheiro de js ao header
-	protected function set_js_files(String|Array $array): Void
+	protected function set_js_files(String|Array $file): Void
 	{
 		if(is_array($file))
 			foreach($array as $path)
@@ -134,6 +128,10 @@ abstract class My_controller extends CI_Controller
 	{
 		$this->load_nav = TRUE;
 		$this->set_css_files(self::NAV_CSS_PATH);
+		$this->set_nav_data(array(
+			'profile' => $this->session->userdata('username')
+		));
+		$this->set_js_files('navbar');
 	}
 
 	/**
@@ -232,6 +230,12 @@ abstract class My_controller extends CI_Controller
 	{
 		header('Location: '.$action);
 	}
+
+	// Troca de controlador para a pagina inicial sem o "/home/"
+	protected function go_to_home(): Void
+	{
+		header('Location: '.base_url());
+	}	
 
 	/**
 	 * Cria uma funcionalidade para POST e GET.

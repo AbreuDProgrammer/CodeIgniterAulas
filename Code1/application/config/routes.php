@@ -56,3 +56,4 @@ $route['translate_uri_dashes'] = FALSE;
 $route['raiz'] = 'raiz';
 $route['empresa'] = 'empresa';
 $route['servicos'] = 'Raiz/servicos';
+$route['contatos'] = 'Base/index';

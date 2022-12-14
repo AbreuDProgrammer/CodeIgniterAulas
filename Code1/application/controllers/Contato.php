@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Contato extends My_controller 
 {
 
-	public function construtor(): void
+	public function constructor(): void
 	{
 		$this->load->library('session');
 	}

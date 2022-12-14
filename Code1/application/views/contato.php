@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <div id="container">
-    <? if($formErrors): ?>
+    <? if(isset($formErrors) && $formErrors): ?>
         <div class="alert-danger">
             <?= $formErrors; ?>
         </div>
@@ -10,7 +10,7 @@
             <? $this->session->flashdata('success_msg'); ?>
         </div>
     <? endif; ?>
-    <?
+    <!--
     /**
      * Preenchimento dos campos com os dados passados pelo user.
      * 
@@ -18,7 +18,7 @@
      * 
      * O metodo set_value() tem um parâmetro que é o nome do campo, o mesmo usado no input
      */
-    ?>
+    -->
     <form method="post" id="form">
         <label for="nome">Nome</label>
         <input value="<?= set_value('nome'); ?>" name="nome" placeholder="Nome">

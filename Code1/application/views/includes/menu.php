@@ -14,8 +14,8 @@
         <li class="<?= ($this->router->fetch_class() == 'Raiz' && $this->router->fetch_method() == 'servicos')?'active':null; ?>">
             <a href="<?= base_url('servicos'); ?>">Serviços</a>
         </li>
-        <li class="<?= ($this->router->fetch_class() == 'Raiz' && $this->router->fetch_method() == 'index')?'active':null; ?>">
-            <a>Contatos</a>
+        <li class="<?= ($this->router->fetch_class() == 'Raiz' && $this->router->fetch_method() == 'contatos')?'active':null; ?>">
+            <a href="<?= base_url('contatos'); ?>">Contatos</a>
         </li>
         <li class="<?= ($this->router->fetch_class() == 'Raiz' && $this->router->fetch_method() == 'index')?'active':null; ?>">
             <a>Upload</a>

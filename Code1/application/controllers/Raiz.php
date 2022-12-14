@@ -3,6 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Raiz extends My_controller {
 
+	public function construtor(): void
+	{
+		$this->load->model('contatos_model');
+		echo 'ok';
+	}
+	
 	public function index()
 	{
 		$this->setTitle('Home Page');
