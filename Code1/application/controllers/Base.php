@@ -28,7 +28,14 @@ class Base extends My_controller
 		if($validacao){
 			//O Codeigniter consegue controlar os pedidos via metodo POST
 			$contato = $this->input->post();
-			$this->contatos_model->insert($contato);
+			$response = $this->contatos_model->insert($contato);
+			if(!$response)
+				$this->session->set_flashdata('error' => 'Não foi possível inserir o contato');
+			else{
+				$this->session->set_flashdata('success' => 'Inserido com sucesso');
+				redirect('base', 'refresh');
+				$this->go_to('');
+			}				
 		}
 	}
 }
