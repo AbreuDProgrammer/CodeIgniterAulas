@@ -16,11 +16,6 @@ class Contato extends My_controller
 		);
 		$this->set_footer_data($footer);
 
-		$data = array(
-			'description' => 'Description home page'
-		);
-		$this->set_body_data($data);
-
 		$this->create_site_details('Contato', array('home'), 'contato', TRUE);
 	}
 }
