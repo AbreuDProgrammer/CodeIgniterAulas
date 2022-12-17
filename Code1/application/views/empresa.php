@@ -7,5 +7,8 @@
 					<?php $this->load->view('comuns/menu'); ?>
 				</nav>
 			</div>
+			<div>
+				EMPRESA 
+			</div>
 		</div>	
 <?php $this->load->view('comuns/footer'); ?>
